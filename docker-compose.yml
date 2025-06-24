@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: surekha-backend
+    build: ./Backend
+    ports:
+      - "3023:3023"
+    depends_on:
+      - postgres
+    environment:
+      - PGHOST=postgres
+      - PGUSER=postgres
+      - PGPASSWORD=admin123
+      - PGDATABASE=employee_portal
+      - PGPORT=5432
+
+  employee-side:
+    container_name: surekha-employee-side
+    build: ./Employee-side
+    ports:
+      - "8097:80"
+
+  hr-view:
+    container_name: surekha-hr-view
+    build: ./HR-view
+    ports:
+      - "8098:80"
+
+  postgres:
+    container_name: surekha-postgres
+    image: postgres:15
+    ports:
+      - "6582:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=employee_portal
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:
+
